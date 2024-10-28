@@ -30,18 +30,27 @@ jobs:
       - name: Publish
         run: dotnet publish --configuration Release --output ./publish
 
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: dotnet-package
+          path: ./publish
+
   deploy:
     runs-on: ubuntu-latest
     needs: build
 
     steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: dotnet-package
+          path: ./publish
+
       - name: Login to Azure
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      # No es necesario volver a hacer checkout del código aquí
-      # ya que solo necesitamos la carpeta ./publish generada en el job build
 
       - name: Azure Web App Deploy
         uses: azure/webapps-deploy@v2
@@ -53,4 +62,3 @@ jobs:
       - name: Logout from Azure
         run: az logout
         if: always()
-        
