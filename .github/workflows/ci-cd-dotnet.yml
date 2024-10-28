@@ -35,6 +35,12 @@ jobs:
     needs: build
 
     steps:
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{secrets.AZURE_WEBAPP_USERNAME}}
+
       - name: Checkout code
         uses: actions/checkout@v2
 
