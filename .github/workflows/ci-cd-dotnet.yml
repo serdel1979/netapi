@@ -1,0 +1,54 @@
+name: CI/CD for .NET Web API
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Paso 1: Checkout del código
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Paso 2: Configurar .NET en el runner
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.x' # Asegúrate de poner la versión que uses
+
+      # Paso 3: Restaurar dependencias
+      - name: Restore dependencies
+        run: dotnet restore
+
+      # Paso 4: Compilar el proyecto
+      - name: Build project
+        run: dotnet build --no-restore --configuration Release
+
+      # Paso 5: Ejecutar pruebas
+      - name: Run tests
+        run: dotnet test --no-build --verbosity normal
+
+      # Paso 6: Publicar artefactos si es necesario (opcional)
+      - name: Publish artifacts
+        run: dotnet publish -c Release -o ./output
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Despliegue (Personaliza según el servicio de alojamiento que uses)
+      - name: Deploy to Hosting Service
+        run: |
+          # Aquí incluirías los comandos para desplegar. Puede ser mediante FTP, SSH o un despliegue directo a un servicio en la nube.
+          echo "Deployment step goes here"
