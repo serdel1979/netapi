@@ -39,7 +39,7 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v1
         with:
-          creds: ${{secrets.AZURE_WEBAPP_USERNAME}}
+          creds: ${{secrets.AZURE_CREDENTIALS}}
 
       - name: Checkout code
         uses: actions/checkout@v2
@@ -54,6 +54,6 @@ jobs:
           package: ./publish
 
       - name: logout
-        run: 
+        run: |
           az logout
         if: always()
