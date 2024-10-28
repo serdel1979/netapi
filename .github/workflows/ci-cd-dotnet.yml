@@ -52,3 +52,8 @@ jobs:
           username: ${{ secrets.AZURE_WEBAPP_USERNAME }} # Nombre de usuario del perfil de publicación
           password: ${{ secrets.AZURE_WEBAPP_PASSWORD }} # Contraseña del perfil de publicación
           package: ./publish
+
+      - name: logout
+        run: 
+          az logout
+        if: always()
