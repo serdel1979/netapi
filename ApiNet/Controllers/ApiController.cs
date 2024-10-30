@@ -1,4 +1,7 @@
-﻿using ApiNet.Model;
+﻿using ApiNet.DTOs;
+using ApiNet.Exceptions;
+using ApiNet.Model;
+using ApiNet.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -11,40 +14,117 @@ namespace ApiNet.Controllers
     public class ApiController : ControllerBase
     {
         private static List<Equipo> equipos = new List<Equipo>();
+        private readonly IServiceEquipo _serviceEquipo;
 
-        [HttpGet("test")]
-        public ActionResult GetTest()
+        public ApiController(IServiceEquipo serviceEquipo)
         {
-            return Ok("Get Ok!!!");
+            this._serviceEquipo = serviceEquipo;
         }
 
-        [HttpPost]
-        public ActionResult PostTest(Equipo equipo)
+
+
+        [HttpPost("Nuevo")]
+        public async Task<ActionResult> Nuevo(EquipoNuevoDTO equipo)
         {
-            if (equipo == null || string.IsNullOrWhiteSpace(equipo.Descripción) || string.IsNullOrWhiteSpace(equipo.Nombre))
+            try
             {
-                return BadRequest("El equipo, su Descripción, y su Nombre son obligatorios.");
+                await _serviceEquipo.AgregaEquipo(equipo); // Agrega await aquí
+                return Ok();
             }
-            equipos.Add(equipo);
-            return Ok("Equipo agregado");
+            catch (EquipoExiste ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
+
+
 
         [HttpGet("todos")]
-        public ActionResult GetAll()
+        public async Task<ActionResult<List<EquipoRespuestaDTO>>> GetAll()
         {
-            return Ok(equipos);
+            try
+            {
+                var equipos = await _serviceEquipo.GetEquipoList();
+                return Ok(equipos); 
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message); 
+            }
         }
 
-        [HttpGet("GetByName/{Name}")]
-        public ActionResult GetByName(string Name)
+        [HttpPut("Update/{id}")]
+        public async Task<ActionResult<EquipoRespuestaDTO>> UpdateEquipo(int id, [FromBody] EquipoNuevoDTO equipoDto)
         {
-            var equipo = equipos.FirstOrDefault(e => string.Equals(e.Nombre, Name, StringComparison.OrdinalIgnoreCase));
-            if (equipo != null)
+            try
             {
+                await _serviceEquipo.Update(equipoDto, id);
+               
+
+                return Ok($"Equipo con id {id} actualizado"); // Devuelve el equipo actualizado en un 200 OK
+            }
+            catch (EquipoInexistente ex)
+            {
+                return BadRequest(ex.Message); // Devuelve un 400 Bad Request en caso de error
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Error en la consulta");
+            }
+        }
+
+        [HttpDelete("Borra/{Id}")]
+        public async Task<ActionResult> Borra(int Id)
+        {
+            try
+            {
+                await _serviceEquipo.Delete(Id);
+                return Ok();
+
+            }
+            catch (EquipoInexistente ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("GetById/{Id}")]
+        public async Task<ActionResult<EquipoRespuestaDTO>> GetById(int Id)
+        {
+            try
+            {
+                var equipo = await _serviceEquipo.GetById(Id);
+                return Ok(equipo); 
+            }
+            catch (EquipoInexistente ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Error en la consulta");
+            }
+        }
+
+
+        [HttpGet("GetByName/{Name}")]
+        public async Task<ActionResult<EquipoRespuestaDTO>> GetGByName(string Name)
+        {
+            try
+            {
+                var equipo = await _serviceEquipo.GetEquipoByName(Name);
                 return Ok(equipo);
             }
-            return NotFound("Equipo no encontrado.");
+            catch (NombreEquipoInexistente ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Error en la consulta");
+            }
         }
+
     }
 }
 

@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ApiNet.Model
+namespace ApiNet.DTOs
 {
-    public class Equipo
+    public class EquipoNuevoDTO
     {
-        public int Id { get; set; }
         [Required]
         public string Nombre { get; set; }
         [Required]
