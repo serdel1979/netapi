@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ApiNet.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class InitDataBase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,7 +18,7 @@ namespace ApiNet.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Nombre = table.Column<string>(type: "text", nullable: false),
-                    Descripción = table.Column<string>(type: "text", nullable: false)
+                    Descripcion = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {

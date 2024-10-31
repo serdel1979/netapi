@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ApiNet.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241030214126_update_column")]
-    partial class update_column
+    [Migration("20241031194343_InitDataBase")]
+    partial class InitDataBase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
