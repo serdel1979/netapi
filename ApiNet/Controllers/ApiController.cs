@@ -92,7 +92,7 @@ namespace ApiNet.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest("Error en la consulta");
+                return BadRequest(ex.Message);
             }
         }
 
@@ -129,7 +129,7 @@ namespace ApiNet.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest("Error en la consulta");
+                return BadRequest(ex.Message);
             }
         }
 
