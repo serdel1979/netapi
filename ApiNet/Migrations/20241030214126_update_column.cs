@@ -5,7 +5,7 @@
 namespace ApiNet.Migrations
 {
     /// <inheritdoc />
-    public partial class update_column : Migration
+    public partial class Update_Column : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
