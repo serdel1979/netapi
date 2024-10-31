@@ -39,7 +39,7 @@ namespace ApiNet.Controllers
 
 
 
-        [HttpGet("todos")]
+        [HttpGet("Listar")]
         public async Task<ActionResult<List<EquipoRespuestaDTO>>> GetAll()
         {
             try
@@ -61,11 +61,15 @@ namespace ApiNet.Controllers
                 await _serviceEquipo.Update(equipoDto, id);
                
 
-                return Ok($"Equipo con id {id} actualizado"); // Devuelve el equipo actualizado en un 200 OK
+                return Ok($"Equipo con id {id} actualizado"); 
             }
             catch (EquipoInexistente ex)
             {
-                return BadRequest(ex.Message); // Devuelve un 400 Bad Request en caso de error
+                return BadRequest(ex.Message);
+            }
+            catch (EquipoExiste ex)
+            {
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
@@ -79,12 +83,16 @@ namespace ApiNet.Controllers
             try
             {
                 await _serviceEquipo.Delete(Id);
-                return Ok();
+                return Ok($"Equipo con id {Id} eliminado!!!");
 
             }
             catch (EquipoInexistente ex)
             {
                 return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Error en la consulta");
             }
         }
 

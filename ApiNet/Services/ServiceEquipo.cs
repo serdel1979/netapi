@@ -32,7 +32,7 @@ namespace ApiNet.Services
         public async Task Delete(int Id)
         {
             var buscado = await _context.Equipos.FirstOrDefaultAsync(eq => eq.Id == Id);
-            if (buscado != null)
+            if (buscado == null)
             {
                 throw new EquipoInexistente(Id);
             }
@@ -78,6 +78,11 @@ namespace ApiNet.Services
             if (existe == null)
             {
                 throw new EquipoInexistente(Id);
+            }
+            var cantNombreExistente = await _context.Equipos.Where(eq => eq.Nombre.Equals(existe.Nombre)&&eq.Id != Id).ToListAsync();
+            if(cantNombreExistente != null)
+            {
+                throw new EquipoExiste(equipo.Nombre);
             }
             existe.Nombre = equipo.Nombre;
             existe.Descripcion = equipo.Descripcion;
