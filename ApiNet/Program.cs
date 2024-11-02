@@ -12,8 +12,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
- builder.Services.AddDbContext<ApplicationDbContext>(options =>
-               options.UseNpgsql(builder.Configuration.GetConnectionString("Connection")));
+var Connection = Environment.GetEnvironmentVariable("Connection");
+
+if (!string.IsNullOrEmpty(Connection))
+{
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                       options.UseNpgsql(Connection));
+}
+else
+{
+    throw new Exception("La variable de entorno Connection no está configurada.");
+}
 
 builder.Services.AddTransient<IServiceEquipo,ServiceEquipo>();
 
